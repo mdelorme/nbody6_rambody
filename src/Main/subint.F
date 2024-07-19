@@ -424,13 +424,13 @@ c$$$  call flush(6)
 *     --12/29/13 22:43-lwang-end----------------------------------------*
                   CALL MPI_SENDRECV(ZMPI(1,istsen),57*icnt,MPI_REAL8,
      *                 isend,rank,ZMPI(1,istrec),57*icnt2,MPI_REAL8,
-     *                 irecv,irecv,MPI_COMM_WORLD,status,ierr)
+     *                 irecv,irecv,MPI_COMM_NB6,status,ierr)
 c$$$                  CALL MPI_SENDRECV(IMPI(1,istsen),lmax*icnt,
 c$$$     *                 MPI_INTEGER,isend,rank,IMPI(1,istrec),
 c$$$     *                 lmax*icnt2,MPI_INTEGER,irecv,irecv,
-c$$$     *                 MPI_COMM_WORLD,status,ierr)
+c$$$     *                 MPI_COMM_NB6,status,ierr)
                   call cputim(ttb)
-                  call mpi_barrier(MPI_COMM_WORLD,ierr)
+                  call mpi_barrier(MPI_COMM_NB6,ierr)
                   call cputim(tt999)
               if(rank.eq.0)ibarcount=ibarcount+1
               if(rank.eq.0)ttbar = ttbar + (tt999-ttb)*60.
@@ -445,14 +445,14 @@ c$$$  call flush(6)
                end do
                call cputim(tta)
                call MPI_ALLGATHER(NNBKTOT,1,MPI_INTEGER,NNBK_MPI(1),
-     &              1,MPI_INTEGER,MPI_COMM_WORLD,ierr)
+     &              1,MPI_INTEGER,MPI_COMM_NB6,ierr)
                IMPI_OFF(1) = 0
                DO K =1,isize-1
                   IMPI_OFF(K+1) = IMPI_OFF(K) + NNBK_MPI(K)
                END DO
                CALL MPI_ALLGATHERV(IMPI_THR(1),NNBKTOT,MPI_INTEGER,
      *              IMPI(1),NNBK_MPI,IMPI_OFF,MPI_INTEGER,
-     &              MPI_COMM_WORLD,ierr)
+     &              MPI_COMM_NB6,ierr)
                call cputim(ttb)
                if(rank.eq.0)ttkssub = ttkssub + (ttb-tta)*60.
 #endif
@@ -517,7 +517,7 @@ c$$$                     print*,rank,'PARALLEL KSINT TBLOCK',tblock
 c$$$                     call flush(6)
 c$$$                  end if
 c$$$                  call flush(110+rank)
-c$$$                  call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$                  call mpi_barrier(MPI_COMM_NB6,ierr)
 c$$$                  if(tblock.gt.6.30187988281250000E-002) stop
 *     --12/30/13 9:16-lwang-end----------------------------------------*
                END DO
@@ -527,10 +527,10 @@ c$$$                  if(tblock.gt.6.30187988281250000E-002) stop
 #ifdef PUREMPI
 *     Gather nstepu, specific iphase and ipair
                CALL MPI_ALLGATHER(JMPI_THR(1),3,MPI_INTEGER,
-     *              JMPI(1,1),3,MPI_INTEGER,MPI_COMM_WORLD,ierr)
+     *              JMPI(1,1),3,MPI_INTEGER,MPI_COMM_NB6,ierr)
 *     Gather Emerge, BE(3) and RMAX
                CALL MPI_ALLGATHER(EMPI_THR(1),3,MPI_REAL8,
-     *              EMPI(1,1),3,MPI_REAL8,MPI_COMM_WORLD,ierr)
+     *              EMPI(1,1),3,MPI_REAL8,MPI_COMM_NB6,ierr)
 *     --03/05/14 20:16-lwang-debug--------------------------------------*
 c$$$***** Note:------------------------------------------------------------**
 c$$$               print*,'r',rank,'THR',JMPI_THR(1:3),
@@ -654,7 +654,7 @@ c$$$     &              'u',u(1,ipair),'ud',udot(1,ipair),'t0',t0(i1),
 c$$$     &              'step',step(i1),'tb',tblock,'t',time
 c$$$               call flush(110+rank)
 c$$$            end do
-c$$$            call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$            call mpi_barrier(MPI_COMM_NB6,ierr)
 *     --03/14/14 12:27-lwang-end----------------------------------------*
          END DO
 *     Copy original block time at end of KS treatment.

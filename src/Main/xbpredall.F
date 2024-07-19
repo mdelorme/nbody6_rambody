@@ -20,7 +20,7 @@
 *
 #ifdef PARALLEL
       call cputim(tt998)
-      call mpi_barrier(MPI_COMM_WORLD,ierr)
+      call mpi_barrier(MPI_COMM_NB6,ierr)
       call cputim(tt999)
       if(rank.eq.0)ibarcount=ibarcount+1
       if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.
@@ -94,19 +94,19 @@
 *
 *     CALL MPI_SENDRECV(PMPI(1,istart),7*icnt,MPI_REAL8,isend,rank,
 *    *                  PMPI(1,istrec),7*icnt2,MPI_REAL8,irecv,irecv,
-*    *                  MPI_COMM_WORLD,status,ierr)
+*    *                  MPI_COMM_NB6,status,ierr)
 *
       CALL MPI_SENDRECV(X(1,istart),3*icnt,MPI_REAL8,isend,rank,
      *                  X(1,istrec),3*icnt2,MPI_REAL8,irecv,irecv,
-     *                  MPI_COMM_WORLD,status,ierr)
+     *                  MPI_COMM_NB6,status,ierr)
       CALL MPI_SENDRECV(XDOT(1,istart),3*icnt,MPI_REAL8,isend,rank,
      *                  XDOT(1,istrec),3*icnt2,MPI_REAL8,irecv,irecv,
-     *                  MPI_COMM_WORLD,status,ierr)
+     *                  MPI_COMM_NB6,status,ierr)
       CALL MPI_SENDRECV(TPRED(istart),icnt,MPI_REAL8,isend,rank,
      *                  TPRED(istrec),icnt2,MPI_REAL8,irecv,irecv,
-     *                  MPI_COMM_WORLD,status,ierr)
+     *                  MPI_COMM_NB6,status,ierr)
        call cputim(tt998)
-       call mpi_barrier(MPI_COMM_WORLD,ierr)
+       call mpi_barrier(MPI_COMM_NB6,ierr)
        call cputim(tt999)
        if(rank.eq.0)ibarcount=ibarcount+1
        if(rank.eq.0)ttbarpr = ttbarpr + (tt999-tt998)*60.

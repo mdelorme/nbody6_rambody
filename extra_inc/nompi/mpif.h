@@ -153,10 +153,12 @@
 !       MPI_2COMPLEX not defined [MPI Errata Oct 94]
 
 ! --- Reserved communicators */
-      integer    MPI_COMM_WORLD
-      parameter (MPI_COMM_WORLD = 0)
+      integer    MPI_COMM_NB6
+      parameter (MPI_COMM_NB6 = 0)
       integer    MPI_COMM_SELF
       parameter (MPI_COMM_SELF = 1)
+      integer    MPI_COMM_NB6
+      parameter (MPI_COMM_NB6 = 2)
 
 ! --- Results of communicator and group comparisons */
       integer    MPI_UNEQUAL

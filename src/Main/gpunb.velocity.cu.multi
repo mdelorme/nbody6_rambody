@@ -579,8 +579,8 @@ void GPUNB_devinit(int irank){
 	assert(NXREDUCE >= NJBLOCK);
 	assert(NXREDUCE <= 32);
         int rank;int size;
-    MPI_Comm_size( MPI_COMM_WORLD, &size );
-    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    MPI_Comm_size( MPI_COMM_NB6, &size );
+    MPI_Comm_rank( MPI_COMM_NB6, &rank );
 
 	cudaGetDeviceCount(&numGPU);
         fprintf(stderr, " irank, rank, size, rank mod numGPU, numGPU %d %d %d %d %d\n",irank,rank,size,rank%numGPU,numGPU);
@@ -612,8 +612,8 @@ void GPUNB_open(int nbmax,int irank){
 	}
 
 	int rank;int size;int nrGPU;
-    MPI_Comm_size( MPI_COMM_WORLD, &size );
-    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+    MPI_Comm_size( MPI_COMM_NB6, &size );
+    MPI_Comm_rank( MPI_COMM_NB6, &rank );
 
                 cudaGetDeviceCount(&nrGPU);
 		cudaSetDevice(devid[rank%nrGPU]);

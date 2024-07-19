@@ -315,7 +315,7 @@ C      end if
       ELSE
           PRINT*,' No SSE/BSE Level defined - STOP '
 #if MPIINIT
-      CALL MPI_ABORT(MPI_COMM_WORLD,ierr)
+      CALL MPI_ABORT(MPI_COMM_NB6,ierr)
 #else
       STOP
 #endif

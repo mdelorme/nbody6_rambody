@@ -388,7 +388,7 @@ c$$$      call abort()
 c$$$      print*,rank,'IMPACT I1',i1,'n',name(i1),'x',x(1,i1),
 c$$$     &     'xdot',xdot(1,i1),'fdot',fdot(1,i1),'time',time
 c$$$      call flush(6)
-c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$      call mpi_barrier(MPI_COMM_NB6,ierr)
 *     --01/03/14 13:46-lwang-end----------------------------------------*
 
       JCMAX = 0

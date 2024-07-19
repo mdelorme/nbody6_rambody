@@ -201,7 +201,7 @@
 *
       
       call cputim(tt998)`
-       call mpi_barrier(MPI_COMM_WORLD,ierr)
+       call mpi_barrier(MPI_COMM_NB6,ierr)
        call cputim(tt999)
        if(rank.eq.0)ibarcount=ibarcount+1
        if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.`

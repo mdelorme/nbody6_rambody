@@ -65,7 +65,7 @@ c$$$          X(3,J) = ((FDOT(3,J)*S + F(3,J))*S + X0DOT(3,J))*S + X0(3,J)
 c$$$             write(120+rank,*)'xcpred i',i,'xc', xc(1,i),'xch',xch(lk),
 c$$$     &            'uc',uc(1,i),'x',x(1,ich),'t',time,'icall',icallp
 c$$$             call flush(120+rank)
-c$$$             call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$             call mpi_barrier(MPI_COMM_NB6,ierr)
 *             if(icallp.eq.13548) call abort()
 *          end if
 *     --03/14/14 15:45-lwang-end----------------------------------------*
