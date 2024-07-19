@@ -4,6 +4,9 @@
       INCLUDE 'params.h'
       IMPLICIT REAL*8  (A-H,O-Z)
       REAL*8  MP,MP0,MPDOT
+      INTEGER RBD_NESCAPERS, RBD_NMESH
+      INTEGER RBD_MESH_DESC(3)
+      LOGICAL RBD_ON
 *
       INCLUDE 'mpi_base.h'
 *
@@ -12,8 +15,8 @@
      &               KSPAIR,NRUN,NCOMM,MODEL,NC,NZERO,NBZERO,NBIN0,NHI0,
      &               NAME0,NCH,NCHAOS,IDUM1,KZ(50),NNBOPT,NIMBH,
      &               ITAIL0,NTAIL, !Tidal tail position indicators
-     &               NEW2(5)
-
+     &               NAMEST,NAMEED,NEW2(3),INPUT_UNIT
+   
       COMMON/PARAMS/ ETAI,ETAR,DTADJ,DELTAT,TCRIT,QE,RBAR,ZMBAR,
      &               DTMIN,RMIN,ETAU,CMSEP2,ECLOSE,GMIN,GMAX,ETA0,
      &               TWOPI,ONE3,ONE6,ONE9,ONE12,TCR0,TRH,BODYM,BODY1,
@@ -28,7 +31,7 @@
      &               GPRINT(9),TLASTT,TLASTS,TLASTB(9),TDUMP,
      &               SCOEFF(12),TOFF,TTOT,EBESC,EMESC,ESESC,CLIGHT,
      &               RZ,TINY,SMAX,WTOT,WTOT0,TCRITP,ZSMASS0,ZBMASS0,
-     &               BIMBH,DTBH,HDFMAX,DUMMY(92)
+     &               BIMBH,DTBH,DUMMY(92)
 
       COMMON/COUNTS/ NSTEPI,NSTEPR,NSTEPU,NNPRED,NBCORR,NBFULL,NBVOID,
      &               NNTB,NBSMIN,NLSMIN,NBDIS,NBDIS2,NCMDER,NBDER,
@@ -79,3 +82,9 @@
 *     Not dump common variables
       COMMON/LISTS/  ILIST(NMAX),JLIST(NMAX),JPERT(5*LMAX)
 *
+      COMMON/RAMBODY/ RBD_MESH(6,NRBDMAX), RBD_PF(3,NRBDMAX),
+     &                RBD_CL_FORCE(3,NRBDMAX),
+     &                RBD_DF(3,NRBDMAX), PREV_T, BAR_SYNC_COUNT(3), 
+     &                RBD_DBG(3,100), RBD_ESCAPERS(7,NMAX),
+     &                RBD_MESH_SCALE, RBD_NESCAPERS, RBD_NMESH, 
+     &                RBD_MESH_DESC, RBD_ON, RBD_EPSILON

@@ -482,7 +482,7 @@ c$$$      j = 15967
 c$$$      print*,rank,'ksterm ',j,'n',name(j),'x',x(1,j),'xdot',xdot(1,j),
 c$$$     &     'fdot',fdot(1,j),'time',time,'iphase',iphase
 c$$$      call flush(6)
-c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$      call mpi_barrier(MPI_COMM_NB6,ierr)
 c$$$      if (time.ge.0.73070144653320313) then
 c$$$         itest = 0
 c$$$         print*,body(itest)

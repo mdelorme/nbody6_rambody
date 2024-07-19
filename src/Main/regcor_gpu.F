@@ -14,7 +14,6 @@ C     &                LISTC(LMAX)
       REAL*8  FRX(3),FDX(3)
       INTEGER NLIST(LMAX),JJLIST(2*LMAX)
 *     REAL*8  DFI(3),DFRG(3)
-      LOGICAL lnan
 *      LOGICAL LCHECK
 *
 *     Mass weighted neighbor list criterion flag
@@ -79,17 +78,18 @@ C$$$      END IF
       IF (KZ(13).GT.0) THEN
           CALL FCLOUD(I,FREG,FDR,1)
       END IF
+             
 *     
 *       See whether an external force should be added.
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0 .OR. MIMD_MODE) THEN 
 #ifdef TT
 *** FlorentR - include the case of tidal tensor
 *       Save current values for deriving work done by tides (#14 = 3 or 9).
-       IF (KZ(14).EQ.3.OR.KZ(14).EQ.9) THEN
+       IF (KZ(14).EQ.3.OR.KZ(14).EQ.9.OR.MIMD_MODE) THEN
 *** FRenaud
 #else
 *       Save current values for deriving work done by tides (#14 = 3).
-          IF (KZ(14).EQ.3) THEN
+          IF (KZ(14).EQ.3 .OR. MIMD_MODE) THEN 
 #endif
               DO 22 K = 1,3
                   FRX(K) = FREG(K)
@@ -524,7 +524,7 @@ c$$$          end if
           FRDOT(K,I) = FDR(K)
 
 *     Do tidal force correction for FIDOT
-          IF (KZ(14).LE.2) THEN
+          IF (KZ(14).LE.2 .AND. .NOT. MIMD_MODE) THEN 
              IF(K.EQ.2) FIDOT(1,I) = FIDOT(1,I) - TIDAL(4)*DFR
              IF(K.EQ.1) FIDOT(2,I) = FIDOT(2,I) + TIDAL(4)*DFR
           END IF
@@ -539,10 +539,10 @@ c$$$          end if
 *     Form rate of tidal energy change during last regular step.
 #ifdef TT
 *** FlorentR - include the case of tidal tensor (really needed?)
-      IF (KZ(14).EQ.3.OR.KZ(14).EQ.9) THEN
+      IF (KZ(14).EQ.3.OR.KZ(14).EQ.9.OR.MIMD_MODE) THEN
 *** FRenaud
 #else
-      IF (KZ(14).EQ.3) THEN
+      IF (KZ(14).EQ.3.OR.MIMD_MODE) THEN
 #endif
          WDOT = 0.0
          W2DOT = 0.0
@@ -562,7 +562,7 @@ c$$$          end if
 *         ETIDE = ETIDE - BODY(I)*((ONE6*W3DOT*DTR - 0.5*W2DOT)*DTR +
 *    &                                                   WDOT)*DTR
          ETIDE = ETIDE + BODY(I)*(0.5*W2DOT*DTR - WDOT)*DTR
-!$omp end atomic          
+!$omp end atomic   
 *       Note: integral of Taylor series for V*P using final values.
       END IF
 

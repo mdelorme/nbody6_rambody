@@ -91,7 +91,7 @@ c$$$      end if
       E(3) = ZKIN - POT + EPL
 
 *       Modify single particle energy by tidal energy (except pure 3D).
-      IF (KZ(14).NE.3.AND.KZ(14).NE.9) THEN
+      IF (KZ(14).NE.3.AND.KZ(14).NE.9 .AND. .NOT.MIMD_MODE)THEN
           E(3) = E(3) + ETIDE
       END IF
 
@@ -103,7 +103,7 @@ c$$$      end if
 *       Define crossing time using single particle energy (cf. option 14).
       TCR = ZMASS**2.5/(2.0*ABS(E(3)))**1.5
 *     Define crossing time and save single particle energy.
-      IF (Q.GT.1.0.AND.KZ(14).LT.3) THEN
+      IF (Q.GT.1.0.AND.KZ(14).LT.3.AND..NOT.MIMD_MODE) THEN
          TCR = TCR*SQRT(2.0*Q)
       END IF
 *     Form provisional total energy.
@@ -161,11 +161,11 @@ c$$$      end if
          RC2 = RC**2
          RC2IN = 1.0/RC2
       END IF
-*     
+*      
 *     Scale average & maximum core density by the mean value.
       RHOD = 4.0*TWOPI*RHOD*RSCALE**3/(3.0*ZMASS)
       RHOM = 4.0*TWOPI*RHOM*RSCALE**3/(3.0*ZMASS)
-*     
+*         
 *     Check optional determination of regularization parameters.
       IF (KZ(16).GT.0) THEN
          RMIN0 = RMIN
@@ -187,7 +187,7 @@ c$$$      end if
             KSMAG = 0
          END IF
       END IF
-*     
+*       
 *     Set useful scalars for the integrator.
       SMIN = 2.0*DTMIN
       RMIN2 = RMIN**2
@@ -209,7 +209,7 @@ c$$$         ALPHA = FAC*ALPHA
 c$$$      END IF
 *     
 *     Define tidal radius for isolated system (2*RTIDE used in ESCAPE).
-      IF (KZ(14).EQ.0) RTIDE = 10.0*RSCALE
+      IF (KZ(14).EQ.0 .OR. MIMD_MODE) RTIDE = 10.0*RSCALE
 #ifdef TT
 *** FlorentR - set the tidal radius
       IF (KZ(14).EQ.9) THEN
@@ -263,7 +263,7 @@ C     New (Aug.1998) by P.Kroupa: (time also in Myr)
  51      FORMAT (/, '  RMIN =',1PE8.1,'  DTMIN =',E8.1,' RHOM =',E8.1,
      &        ' RSCALE =',E8.1,' RSMIN =',E8.1,'  ECLOSE =',
      &        0PF5.2,'  TC =',I5)
-*
+*     
          xnpred = 0.d0
          xnirrf = 0.d0
          if(nblckr.gt.0)xnpred = xnpred/dble(nblckr)     
@@ -341,7 +341,7 @@ C     New (Aug.1998) by P.Kroupa: (time also in Myr)
      &              TDOT2(IP)**2/(SEMI*BODY(N+IP))
                EB = BODY(I1)*BODY(I2)*H(IP)/BODY(N+IP)
                if(rank.eq.0)
-     &         WRITE (39,62)  TTOT, NAME(I1), NAME(I2), KSTAR(N+IP),
+               WRITE (39,62)  TTOT, NAME(I1), NAME(I2), KSTAR(N+IP),
      &              LIST(1,I1), SQRT(ECC2), SEMI, PB, EB, E(3)
  62            FORMAT (' BINARY:   Time[Myr] NAME(I1) NAME(I2) ',
      &              'K*(ICM) NP ECC SEMI[NB] P[days] EB[NB] EM[NB] ',
@@ -416,11 +416,11 @@ C     New (Aug. 1998): P.Kroupa
 #ifdef PARALLEL
          END IF
          call cputim(tt998)
-         CALL MPI_BARRIER(MPI_COMM_WORLD,ierr)
+         CALL MPI_BARRIER(MPI_COMM_NB6,ierr)
          call cputim(tt999)
          if(rank.eq.0)ibarcount=ibarcount+1
-         if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.
-*         CALL MPI_ABORT(MPI_COMM_WORLD,ierr)
+         if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60
+*         CALL MPI_ABORT(MPI_COMM_NB6,ierr)
          CALL MPI_FINALIZE
 #endif
          STOP

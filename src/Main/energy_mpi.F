@@ -49,7 +49,7 @@ c$$$      end if
       VIR = 0.0
 *
       call cputim(tt998)
-      call mpi_barrier(MPI_COMM_WORLD,ierr)
+      call mpi_barrier(MPI_COMM_NB6,ierr)
       call cputim(tt999)
       if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.
       if(rank.eq.0)ibarcount=ibarcount+1
@@ -70,8 +70,7 @@ c$$$      end if
       inum(ix)=inl
       if(ix.le.idiff)inum(ix) = inum(ix) + 1
       ista(ix) = irun+1
-      irun = irun + inum(ix)
- 1003 continue
+ 1003 irun = irun + inum(ix)
 *
       istart = ista(rank+1)
       iend = ista(rank+1) + inum(rank+1) - 1
@@ -174,24 +173,24 @@ C
 *      print*,' ENERGY: bef rank ',rank,' shpot(',istrec,')=',
 *     *          shpot(istrec)
 *
-*     call mpi_barrier(MPI_COMM_WORLD,ierr)
+*     call mpi_barrier(MPI_COMM_NB6,ierr)
       call cputim(ttae)
       CALL MPI_SENDRECV(PHIDBL(istart),icnt,MPI_REAL8,isend,rank,
      *                  PHIDBL(istrec),icnt2,MPI_REAL8,irecv,irecv,
-     *                  MPI_COMM_WORLD,status,ierr)
+     *                  MPI_COMM_NB6,status,ierr)
 #ifndef GPU
       CALL MPI_SENDRECV(SHPOT(istart),icnt,MPI_REAL8,isend,rank,
      *                  SHPOT(istrec),icnt2,MPI_REAL8,irecv,irecv,
-     *                  MPI_COMM_WORLD,status,ierr)
+     *                  MPI_COMM_NB6,status,ierr)
 #endif      
       call cputim(ttab)
-      if(rank.eq.0)ttsube = ttsube + (ttab-ttae)*60.
+      ttsube = ttsube + (ttab-ttae)*60
 *
       call cputim(tt998)
-      call mpi_barrier(MPI_COMM_WORLD,ierr)
+      call mpi_barrier(MPI_COMM_NB6,ierr)
       call cputim(tt999)
-      if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.
-      if(rank.eq.0)ibarcount=ibarcount+1
+      ttbar = ttbar + (tt999-tt998)*60
+      ibarcount=ibarcount+1
 
  1001  continue
 #ifdef GPU       
@@ -262,7 +261,7 @@ c$$$         print*, 'phi: ',phidbl(ifirst:ifirst+5)
       ZKIN = 0.5D0*ZKIN
 *
 *       Obtain the tidal potential energy for linearized external field. 
-      IF (KZ(14).EQ.0) THEN
+      IF (KZ(14).EQ.0.AND.(.NOT.MIMD_MODE)) THEN
 *       Note: EPL holds accumulated tidal energy if KZ(14) = 3.
          EPL = 0.0D0
       ELSE

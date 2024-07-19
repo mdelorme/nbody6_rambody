@@ -135,7 +135,7 @@ c$$$      end if
    70 CONTINUE
 *
 *       Check option for external force.
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0.OR.MIMD_MODE) THEN
           CALL XTRNLD(I1,I2,2)
       END IF
 *

@@ -106,7 +106,7 @@ c$$$              POTJ = POTJ + BODY(J)/SQRT(RIJ2)
 c$$$    9     CONTINUE
           ECM(JPAIR) = 0.5*VJ2 - phidbl(ICM)
 *       Check for external tidal field (note that HT includes mass).
-          IF (KZ(14).GT.0) THEN
+          IF (KZ(14).GT.0 .OR. MIMD_MODE) THEN
               CALL XTRNLV(ICM,ICM)
               ECM(JPAIR) = ECM(JPAIR) + HT/(BODY(ICM) + 1.0E-20)
           END IF

@@ -10,6 +10,8 @@
 #endif
       INCLUDE 'galaxy.h'
       REAL*8  XI(3),XIDOT(3),FREG(3),FDR(3),FM(3),FMD(3)
+      REAL*8  DIST, MIN_DIST, DFORCE(3)
+      INTEGER CLOSEST
 *
 *
 *       Consider point-mass, disk and/or logarithmic halo model.
@@ -61,6 +63,14 @@
       END IF
 *** FRenaud
 #endif
+#endif
+
+*     RAMBODY
+      if (MIMD_MODE) then
+         call rbd_get_force(XI, FM)
+         FREG = FREG + FM
+      end if
+
       RETURN
 *
       END

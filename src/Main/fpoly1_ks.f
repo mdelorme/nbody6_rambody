@@ -141,7 +141,7 @@ c$$$                   print*,'I NAMEJ D1',I,NAMEJ,D1(1,I),J,BODY(J),F1(1),
 c$$$     *                  F1DOT(1),X(1,j),XDOT(1,J)
 c$$$                end if
 c$$$             end if
-c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)       
+c$$$      call mpi_barrier(MPI_COMM_NB6,ierr)       
 *     --11/24/13 15:23-lwang-end----------------------------------------*
               DO 28 K = 1,3
                   FI(K,I) = FI(K,I) + F1(K)
@@ -179,7 +179,7 @@ c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
    40 CONTINUE
 *
 *       Check option for external force.
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0.OR.MIMD_MODE) THEN
           CALL XTRNLD(I1,I2,1)
       END IF
 *

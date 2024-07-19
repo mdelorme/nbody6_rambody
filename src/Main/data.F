@@ -10,15 +10,6 @@
 *      REAL*8  A(8)
       CHARACTER*1 CHAR(80)
       LOGICAL LREADN,LREADP,LREADF
-      NAMELIST /INDATA/ ALPHAS, BODY1, BODYN, NBIN0, NHI0, ZMET,
-     &     EPOCH0,DTPLOT
-* sse parameters for hrdiag, mlwind
-      integer ecflag,wdflag,nsflag,psflag,mdflag,bhflag,kmech,idum
-      real*8 mch,mxns0,mxns1,nwind,bwind,flbv,disp,ecsig,
-     *       wdsig1,wdsig2,wdkmax,vvfac,zmetal
-      common/sse/ecflag,wdflag,nsflag,psflag,mdflag,bhflag,
-     *       kmech,idum,mch,mxns0,mxns1,nwind,bwind,flbv,disp,ecsig,
-     *       wdsig1,wdsig2,wdkmax,vvfac,zmetal
 *
 #ifdef PARALLEL
 #define MPIINIT 1
@@ -103,15 +94,15 @@
 * 
       end if
 #ifdef PARALLEL
-      CALL MPI_BCAST(N,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(NTOT,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-*      CALL MPI_BCAST(RTIDE,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(BODY(1),N,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(X(1,1),3*N,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(XDOT(1,1),3*N,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
+      CALL MPI_BCAST(N,1,MPI_INTEGER,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(NTOT,1,MPI_INTEGER,0,MPI_COMM_NB6,ierr)
+*      CALL MPI_BCAST(RTIDE,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(BODY(1),N,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(X(1,1),3*N,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(XDOT(1,1),3*N,MPI_REAL8,0,MPI_COMM_NB6,ierr)
       call cputim(tt998)
-      CALL mpi_barrier(MPI_COMM_WORLD,ierr)
-      if(rank.eq.0)ibarcount=ibarcount+1
+      CALL mpi_barrier(MPI_COMM_NB6,ierr)
+      ibarcount=ibarcount+1
       call cputim(tt999)
       if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.
 #endif
@@ -147,14 +138,14 @@
          endif
       end if
 #ifdef PARALLEL
-      CALL MPI_BCAST(ALPHAS,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(BODY1,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(BODYN,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(NBIN0,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(NHI0,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(ZMET,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(EPOCH0,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(DTPLOT,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
+      CALL MPI_BCAST(ALPHAS,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(BODY1,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(BODYN,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(NBIN0,1,MPI_INTEGER,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(NHI0,1,MPI_INTEGER,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(ZMET,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(EPOCH0,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(DTPLOT,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
 #endif
 *
       IF(KZ(22).GE.2.AND.KZ(22).NE.9)GO TO 50

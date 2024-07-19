@@ -277,8 +277,8 @@ cnew-abbas-26/07/2017
               ECDOT = ECDOT + DM*POTJ + 0.5d0*DM*VI2
 *
 *       See whether tidal terms should be included (standard or scaled).
-              IF (KZ(14).GT.0) THEN
-                  IF (KZ(14).LE.2) THEN
+              IF (KZ(14).GT.0 .OR. MIMD_MODE) THEN
+                  IF (KZ(14).LE.2 .AND. (.NOT. MIMD_MODE)) THEN
                       ECDOT = ECDOT - 0.5d0*DM*(TIDAL(1)*X(1,I)**2 +
      &                                          TIDAL(3)*X(3,I)**2)
                   ELSE
@@ -305,6 +305,7 @@ cnew-abbas-26/07/2017
 *              call xbpredall
               DO 30 L = 2,NNB+1
                   J = ILIST(L)
+*                 IF(BODY(J).GT.0) THEN
                   DO 25 K = 1,3
                       X0DOT(K,J) = XDOT(K,J)
                       X0(K,J) = X(K,J)
@@ -315,6 +316,7 @@ cnew-abbas-26/07/2017
                   CALL FPOLY2(J,J,0)
 *     Add J into NLSTDELAY
                   call delay_store_tlist(J)
+*                 END IF
    30         CONTINUE
               TPREV = TIME - STEPX
 *
@@ -413,6 +415,7 @@ cnew-abbas-26/07/2017
 *       Obtain new F & FDOT and time-steps.
                   DO 50 L = 2,NNB2
                       J = ILIST(L)
+*                      IF(BODY(J).GT.0) THEN
                       IF (L.EQ.NNB2) THEN
                           J = I
 *     remove from NXTLST
@@ -431,6 +434,7 @@ cnew-abbas-26/07/2017
                       CALL FPOLY2(J,J,0)
 *     add into NLSTDELAY
                       call delay_store_tlist(J)
+*                   END IF
    50             CONTINUE
               END IF
               TPREV = TIME - STEPX

@@ -15,6 +15,10 @@
 #else
 #define MPIINIT 0
 #endif
+      if (MIMD_MODE) then
+         write(6,*) 'ERROR : Entering xtrnl0 in Rambody !'
+         STOP
+      end if
 *
 *       Check option for cluster in circular galactic orbit.
       IF (KZ(14).NE.1) GO TO 20

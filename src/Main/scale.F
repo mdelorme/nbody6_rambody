@@ -5,7 +5,6 @@
 *       ---------------------
 *
       INCLUDE 'common6.h'
-      NAMELIST /INSCALE/ Q,VXROT,VZROT,RTIDE
       LOGICAL LSCALE
 *      Scaling if initial model is constructed or King model is read
       LSCALE = KZ(22).LT.2.OR.KZ(22).GE.6
@@ -26,10 +25,10 @@
 *      SMAX = 0.5
 #if MPIINIT
 *     print*,' MPIINIT selected to be 1'
-      CALL MPI_BCAST(Q,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(VXROT,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(VZROT,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(RTIDE,1,MPI_REAL8,0,MPI_COMM_WORLD,ierr)
+      CALL MPI_BCAST(Q,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(VXROT,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(VZROT,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(RTIDE,1,MPI_REAL8,0,MPI_COMM_NB6,ierr)
 #endif
 *
 *       Note RTIDE should be non-zero for isolated systems (cf. CALL LAGR).
@@ -158,7 +157,7 @@
       end if
 *     --10/22/13 18:41-lwang-end----------------------------------------*
 *       Use generalized virial theorem for external tidal field.
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0 .OR. MIMD_MODE) THEN
           AZ = 0.0D0
           DO 55 I = 1,N
               AZ = AZ + BODY(I)*(X(1,I)*XDOT(2,I) - X(2,I)*XDOT(1,I))
@@ -252,7 +251,7 @@
             VSTAR = VSTAR/SQRT(SX)
             RBAR = SX
          END IF
-         
+
       ELSE
          ETOT = ZKIN - POT
          E0 = ETOT

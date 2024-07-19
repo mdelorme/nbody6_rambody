@@ -12,11 +12,14 @@
 *     Safe for parallel
       INCLUDE 'galaxy.h'
       REAL*8  XI(3),XIDOT(3),FIRR(3),FREG(3),FD(3),FDR(3),
-     &        XG(3),XGDOT(3),FM(3),FMD(3),FS(3),FSD(3)
+     &        XG(3),XGDOT(3),FM(3),FMD(3),FS(3),FSD(3),DFF(3)
+      REAL*8  DIST, MIN_DIST, DFORCE(3)
+      INTEGER CLOSEST
 *
-*
+
+      
 *       See whether to include a linearized galactic tidal force (two cases).
-      IF (KZ(14).LE.2) THEN
+      IF (KZ(14).LE.2.AND..NOT.MIMD_MODE) THEN
           FIRR(1) = FIRR(1) + TIDAL(4)*XIDOT(2)
           FIRR(2) = FIRR(2) - TIDAL(4)*XIDOT(1)
           FD(1) = FD(1) + TIDAL(4)*(FIRR(2) + FREG(2))
@@ -28,6 +31,22 @@
               FDR(1) = FDR(1) + TIDAL(1)*XIDOT(1)
               FDR(3) = FDR(3) + TIDAL(3)*XIDOT(3)
           END IF
+      END IF
+
+*     Rambody, only applying force on regular components
+      IF (MIMD_MODE.AND.KCASE.GT.0) THEN
+         !RG     = RBD_DBG(:,1)
+         !XG     = XI + RG
+         !FS     = -RG * 2.44140625D7 / NORM2(RG)**3.0
+         !FM     = -XG * 2.44140625D7 / NORM2(XG)**3.0
+
+         !write(6,*) 'Analytical force : ', FM, FS, FM-FS
+
+         !DFF = FM-FS
+         !FREG   = FREG + (FM - FS)
+         call rbd_get_force(XI, FM)
+         FS = RBD_MESH(4:6, 1)
+         FREG = FREG + FM-FS
       END IF
 *
 #ifdef TT
@@ -60,7 +79,6 @@
          DO 38 K = 1,3
             FREG(K) = FREG(K) + (FM(K) - FS(K))
             FDR(K) = FDR(K) + (FMD(K) - FSD(K))
-
  38      CONTINUE
 
 
@@ -89,11 +107,14 @@
           IF (GMB.GT.0.0D0) THEN
               CALL FBULGE(RG,VG,FS,FSD)
               CALL FBULGE(XG,XGDOT,FM,FMD)
+
+              DIF = 0.0
               DO 15 K = 1,3
                   FREG(K) = FREG(K) + (FM(K) - FS(K))
                   FDR(K) = FDR(K) + (FMD(K) - FSD(K))
  15            CONTINUE
-          END IF
+
+            END IF
 
 *       Include Miyamoto disk for positive disk mass.
           IF (DISK.GT.0.0D0) THEN

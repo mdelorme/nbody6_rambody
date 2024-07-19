@@ -16,9 +16,13 @@
 *
 *       Read input parameters.
       CALL INPUT
-*
+
+      IF (MIMD_MODE) THEN
+         CALL rbd_init
+      END IF
+*     
 *       Open all Files.
-      if(rank.eq.0)CALL FILE_INIT
+      if(rank.eq.0) CALL FILE_INIT
 *
 *       Set initial conditions: BODY(I), X(K,I), XDOT(K,I); I=1,N & K=1,3.
       CALL DATA
@@ -112,7 +116,7 @@
 *       Set optional stellar evolution parameters.
       IF (KZ(19).GT.2) THEN
           CALL INSTAR
-      ELSE IF (KZ(14).GT.1) THEN
+      ELSE IF (KZ(14).GT.1.OR.MIMD_MODE) THEN
           DT = 1.0E-03/TSCALE
           CALL STEPK(DT,DTN)
           STEPX = DTN

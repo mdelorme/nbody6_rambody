@@ -46,7 +46,7 @@
    10 CONTINUE
 *
 *       Include any external potentials.
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0 .OR. MIMD_MODE) THEN
           DO 20 L = 1,NB
               I = JLIST(L)
               CALL XTRNLV(I,I)

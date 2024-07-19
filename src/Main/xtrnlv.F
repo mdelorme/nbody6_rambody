@@ -27,10 +27,11 @@
 *       Treat all cases uniformly (but note Coliolis term in FIRR).
 #ifdef TT
 *** FlorentR - case of tidal tensor
-      ELSE IF ((KZ(14).LE.4.OR.KZ(14).EQ.9).AND.I2.NE.I1) THEN
+       ELSE IF ((KZ(14).LE.4.OR.KZ(14).EQ.9.OR.MIMD_MODE).AND.I2.NE.I1)
+     &         THEN
 *** FRenaud
 #else
-      ELSE IF (KZ(14).LE.4.AND.I2.NE.I1) THEN
+      ELSE IF ((KZ(14).LE.4.OR.MIMD_MODE).AND.I2.NE.I1) THEN
 #endif
           VIR = 0.0
           DO 5 I = I1,I2
@@ -54,16 +55,15 @@
 *       Quit for pure 3D tidal field (case of full N summation).
 #ifdef TT
 *** FlorentR - case of tidal tensor
-          IF (KZ(14).EQ.3.OR.KZ(14).EQ.9) GO TO 40
-*          IF (KZ(14).EQ.3) GO TO 40
+          IF (KZ(14).EQ.3.OR.KZ(14).EQ.9.OR.MIMD_MODE) GO TO 40
 *** FRenaud
 #else
-          IF (KZ(14).EQ.3) GO TO 40
+          IF (KZ(14).EQ.3.OR.MIMD_MODE) GO TO 40
 #endif
       END IF
 *
 *       See whether to include a linearized galactic tidal force.
-      IF (KZ(14).LE.2) THEN
+      IF (KZ(14).LE.2 .AND. .NOT. MIMD_MODE) THEN
           DO 10 I = I1,I2
               ET = ET - 0.5D0*BODY(I)*(TIDAL(1)*X(1,I)**2 +
      &                                 TIDAL(3)*X(3,I)**2)
@@ -134,6 +134,22 @@
         ENDIF
 *** FRenaud
 #endif
+      ELSE IF(MIMD_MODE) THEN
+         I = I1
+         DO K = 1,3
+            XI(K) = X(K,I)
+            XIDOT(K) = XDOT(K,I)
+            FIRR(K) = 0.0
+            FREG(K) = 0.0
+            FD(K) = 0.0
+            FDR(K) = 0.0
+         END DO
+
+         CALL XTRNLF(XI,XIDOT,FIRR,FREG,FD,FDR,1)
+         
+         DO K=1,3
+            ET = ET + BODY(I) * XI(K) * FREG(K) 
+         END DO
       END IF
 *
 *       Place sum in ETIDE and single particle contribution in HT.

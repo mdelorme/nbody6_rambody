@@ -43,7 +43,7 @@ c$$$      kk= 15967
 c$$$      print*,rank,'SETSYS KK',kk,'n',name(kk),'x',x(1,kk),
 c$$$     &     'xdot',xdot(1,kk),'fdot',fdot(1,kk),'time',time
 c$$$      call flush(6)
-c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$      call mpi_barrier(MPI_COMM_NB6,ierr)
 *     --01/03/14 13:06-lwang-end----------------------------------------*
 *
 *       Initialize c.m. variables.
@@ -127,7 +127,7 @@ c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
 c$$$      print*,rank,'SUBSYS ICH',ich,'n',name(ich),'x',x(1,ich),
 c$$$     &     'xdot',xdot(1,ich),'fdot',fdot(1,ich),'time',time
 c$$$      call flush(6)
-c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$      call mpi_barrier(MPI_COMM_NB6,ierr)
 *     --01/03/14 13:06-lwang-end----------------------------------------*
 *
 *       Copy neighbour list for ghost removal.
@@ -166,7 +166,7 @@ c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
 c$$$      print*,rank,'CHFIRR ICH',ich,'n',name(ich),'x',x(1,ich),
 c$$$     &     'xdot',xdot(1,ich),'fdot',fdot(1,ich),'time',time
 c$$$      call flush(6)
-c$$$      call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$      call mpi_barrier(MPI_COMM_NB6,ierr)
 *     --01/03/14 13:06-lwang-end----------------------------------------*
       DO 30 K = 1,3
           F(K,ICH) = F(K,ICH) + 0.5*FIRR(K)
@@ -225,7 +225,7 @@ c$$$     *        'body',body(j),'time',time,'list',list(1,j)
 c$$$            call flush(100+rank)
 c$$$*            end if
 c$$$         end do
-c$$$         call mpi_barrier(MPI_COMM_WORLD,ierr)
+c$$$         call mpi_barrier(MPI_COMM_NB6,ierr)
 c$$$
 *     --10/29/13 12:33-lwang-end----------------------------------------*
       RETURN

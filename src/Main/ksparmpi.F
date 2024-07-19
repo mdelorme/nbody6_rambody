@@ -107,9 +107,9 @@ c$$$            end if
       ELSEIF (operator.eq.K_comm) then
 *     Gather all integer data
          call MPI_ALLGATHER(LISTILEN,1,MPI_INTEGER,LISTILEN_MPI(1),
-     &        1,MPI_INTEGER,MPI_COMM_WORLD,ierr)
+     &        1,MPI_INTEGER,MPI_COMM_NB6,ierr)
          call MPI_ALLGATHER(LISTRLEN,1,MPI_INTEGER,LISTRLEN_MPI(1),
-     &        1,MPI_INTEGER,MPI_COMM_WORLD,ierr)
+     &        1,MPI_INTEGER,MPI_COMM_NB6,ierr)
          LIDISPLACE(1) = 0
          LRDISPLACE(1) = 0
          DO K=1,isize-1
@@ -121,7 +121,7 @@ c$$$            end if
             IKSMPI(1) = LISTILEN
             CALL MPI_ALLGATHERV(IKSMPI(1),LISTILEN,MPI_INTEGER,
      *           IKSMERGE(1),LISTILEN_MPI,LIDISPLACE,MPI_INTEGER,
-     &           MPI_COMM_WORLD,ierr)
+     &           MPI_COMM_NB6,ierr)
 *     --02/25/14 16:39-lwang-debug--------------------------------------*
 ***** Note:------------------------------------------------------------**
 c$$$            LASTI = LIDISPLACE(isize)+LISTILEN_MPI(isize)
@@ -196,7 +196,7 @@ c$$$               call flush(6)
             RKSMPI(1) = DFLOAT(LISTRLEN)
             CALL MPI_ALLGATHERV(RKSMPI(1),LISTRLEN,MPI_REAL8,
      *           RKSMERGE(1),LISTRLEN_MPI,LRDISPLACE,MPI_REAL8,
-     &           MPI_COMM_WORLD,ierr)
+     &           MPI_COMM_NB6,ierr)
 *     --02/25/14 16:39-lwang-debug--------------------------------------*
 ***** Note:------------------------------------------------------------**
 c$$$            LASTI = LRDISPLACE(isize)+LISTRLEN_MPI(isize)
@@ -347,13 +347,13 @@ c$$$            if(EMERGE_MPI.GE.5) print*,'Warning! EMERGE_MPI Error'
       COMMON/SAVEIT/ IPH0,KS0,KCH0,KS20,JC0,JCL0,PCR0
       integer iproc
 
-      CALL MPI_BCAST(IPH0,1,MPI_INTEGER,iproc,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(KS0,1,MPI_INTEGER,iproc,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(KCH0,1,MPI_INTEGER,iproc,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(KS20,1,MPI_INTEGER,iproc,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(JC0,1,MPI_INTEGER,iproc,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(JCL0,1,MPI_INTEGER,iproc,MPI_COMM_WORLD,ierr)
-      CALL MPI_BCAST(PCR0,1,MPI_REAL8,iproc,MPI_COMM_WORLD,ierr)
+      CALL MPI_BCAST(IPH0,1,MPI_INTEGER,iproc,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(KS0,1,MPI_INTEGER,iproc,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(KCH0,1,MPI_INTEGER,iproc,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(KS20,1,MPI_INTEGER,iproc,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(JC0,1,MPI_INTEGER,iproc,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(JCL0,1,MPI_INTEGER,iproc,MPI_COMM_NB6,ierr)
+      CALL MPI_BCAST(PCR0,1,MPI_REAL8,iproc,MPI_COMM_NB6,ierr)
 #endif
       RETURN
 

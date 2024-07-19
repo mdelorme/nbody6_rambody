@@ -91,15 +91,17 @@
             EI = 0.5*VI2 - POTI
 #ifdef TT
 *** FlorentR - add nbody6tt
-          IF (KZ(14).EQ.4.OR.KZ(14).EQ.3.OR.KZ(14).EQ.9) THEN
+            IF (KZ(14).EQ.4.OR.KZ(14).EQ.3.OR.KZ(14).EQ.9.OR.MIMD_MODE)
+     &           THEN
 *** FRenaud
 #else
-          IF (KZ(14).EQ.4.OR.KZ(14).EQ.3) THEN
+          IF (KZ(14).EQ.4.OR.KZ(14).EQ.3.OR.MIMD_MODE) THEN
 #endif
               EI = EI - MP/SQRT(RI2 + AP2)
               IF (BODY(I).EQ.0.0D0) GO TO 30
           END IF
           IF ((KZ(14).GT.0.AND.KZ(14).NE.4).OR.EI.GT.0.0) GO TO 30
+          IF (MIMD_MODE) GO TO 30
           IF (NAME(I).LT.0) GO TO 30
          END IF
 *
@@ -224,12 +226,19 @@
 #ifdef TT
 *       Check initialization of tidal tail integration for 3D model.
 *** FlorentR - add nbody6tt
-      IF (KZ(23).GE.3.AND.(KZ(14).EQ.3.OR.KZ(14).EQ.9)) THEN
+      IF (KZ(23).GE.3.AND.(KZ(14).EQ.3.OR.KZ(14).EQ.9.OR.MIMD_MODE))
+     &     THEN
 *** FRenaud
 #else
-      IF (KZ(23).GE.3.AND.KZ(14).EQ.3) THEN
+      IF (KZ(23).GE.3.AND.(KZ(14).EQ.3.OR.MIMD_MODE)) THEN
 #endif
          CALL TAIL0(I)
+      END IF
+
+      IF (MIMD_MODE) THEN
+         write(6,*) 'STORE_ESCAPER'
+         call flush(6)
+         CALL rbd_store_escaper(I)
       END IF
 
 *       Obtain binding energy of body #I and update optional tidal radius.
@@ -237,7 +246,7 @@
 #ifdef TT
       IF (KZ(14).GT.0.AND.KZ(14).LT.3) THEN
 #else
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0) THEN 
 #endif
           CALL XTRNLV(I,I)
           ZK = ZK + HT
@@ -252,11 +261,13 @@
          END IF
 *** FRenaud
 #endif
+      ELSE IF (MIMD_MODE) THEN
+         RTIDE = 10.*RSCALE !
       END IF
       EI = ZK - BODY(I)*POTI
 *
 *       Update tidal radius in case of tidal cutoff (R.Sp.)
-      IF(KZ(23).EQ.3)THEN
+      IF(KZ(23).GE.3)THEN
           RTOLD = RTIDE
           RTIDE = RTIDE*(ZMASS/ZMOLD)**0.3333
       END IF

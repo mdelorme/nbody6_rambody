@@ -6,13 +6,14 @@
 *     -----------
       implicit none
       INTEGER NMAX,KMAX,LMAX,MMAX,MLD,MLR,MLV,MCL,NCMAX,NTMAX
+      INTEGER NRBDMAX
       INTEGER maxpe,ithread
       INTEGER NN,NN1,NN14,NN42,NN98,NTP
-      INCLUDE 'params.h'
+      include 'params.h'
       INCLUDE 'mpi_base.h'
       parameter(NN=9,NN1=NN,NN14=14*NN,NN42=42*NN,NN98=98*NN,NTP=11)
-      INCLUDE 'output.h'
-      INCLUDE 'scale_out.h'
+      include 'output.h'
+      include 'scale_out.h'
 *      include 'omp_lib.h'
 
 *     Input arguments

@@ -104,7 +104,7 @@ c$$$               if(rank.eq.0) print*, 'GPU2:',DMPHI(1:NPNUM)
                DMPHI_L(III) = DMPHI_T
             END DO
             CALL MPI_ALLREDUCE(DMPHI_L,DMPHI,NPNUM,MPI_REAL8,MPI_SUM,
-     &           MPI_COMM_WORLD,ierr)
+     &           MPI_COMM_NB6,ierr)
          end if
 #endif
 c$$$            DO IIJ = 1, NPNUM

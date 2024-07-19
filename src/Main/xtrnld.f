@@ -9,7 +9,7 @@
 *
 *
 *       See whether to include the standard or point-mass tidal force.
-      IF (KZ(14).LE.2.AND.KCASE.EQ.1) THEN
+      IF (KZ(14).LE.2.AND.KCASE.EQ.1.AND..NOT.MIMD_MODE) THEN
 *       Include tidal force & first derivative (I1 = I2 for single body).
           DO 10 I = I1,I2
               FI(1,I) = FI(1,I) + TIDAL(4)*XDOT(2,I)
@@ -23,7 +23,7 @@
    10     CONTINUE
       END IF
 *
-      IF (KZ(14).LE.2.AND.KCASE.EQ.2) THEN
+      IF (KZ(14).LE.2.AND.KCASE.EQ.2.AND..NOT.MIMD_MODE) THEN
 *       Add the second and third derivatives due to the tidal field.
           DO 20 I = I1,I2
               D2(1,I) = D2(1,I) + TIDAL(4)*FDOT(2,I)
@@ -37,27 +37,28 @@
    20     CONTINUE
       END IF
 *
-*       Check options for galactic potential (called from FPOLY1).
-      IF (KZ(14).GE.3.AND.KCASE.EQ.1) THEN
-*       Obtain regular force components for 3D galaxy or Plummer model.
-          DO 30 I = I1,I2
-              DO 25 K = 1,3
-                  XI(K) = X(K,I)
-                  XIDOT(K) = XDOT(K,I)
-                  FIRR(K) = 0.0
-                  FD(K) = 0.0
-                  FREG(K) = 0.0
-                  FDR(K) = 0.0
-   25         CONTINUE
-              CALL XTRNLF(XI,XIDOT,FIRR,FREG,FD,FDR,1)
-              DO 28 K = 1,3
-                  FR(K,I) = FR(K,I) + FREG(K)
-                  D1R(K,I) = D1R(K,I) + FDR(K)
-   28         CONTINUE
-   30     CONTINUE
-*
+*     Check options for galactic potential (called from FPOLY1).
+      
+      IF ((KZ(14).GE.3.OR.MIMD_MODE).AND.KCASE.EQ.1) THEN
+*     Obtain regular force components for 3D galaxy or Plummer model.
+         DO 30 I = I1,I2
+            DO 25 K = 1,3
+               XI(K) = X(K,I)
+               XIDOT(K) = XDOT(K,I)
+               FIRR(K) = 0.0
+               FD(K) = 0.0
+               FREG(K) = 0.0
+               FDR(K) = 0.0
+ 25         CONTINUE
+            CALL XTRNLF(XI,XIDOT,FIRR,FREG,FD,FDR,1)
+            DO 28 K = 1,3
+               FR(K,I) = FR(K,I) + FREG(K)
+               D1R(K,I) = D1R(K,I) + FDR(K)
+ 28         CONTINUE
+ 30      CONTINUE
+*     
       END IF
-*
+*     
       RETURN
 *
       END

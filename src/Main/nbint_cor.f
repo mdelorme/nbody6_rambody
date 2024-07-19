@@ -111,7 +111,7 @@ c$$$      end if
 *       Check option for external tidal field.
 *       Use predicted force of previous step for compatibility with regint.
    70 DT = TIME - T0(I)
-      IF (KZ(14).GT.0) THEN
+      IF (KZ(14).GT.0 .OR. MIMD_MODE) THEN
           DO 75 K = 1,3
               FREG(K) = FR(K,I) + DT*FRDOT(K,I)
    75     CONTINUE

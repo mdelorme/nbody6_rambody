@@ -6,12 +6,13 @@
 *
       INCLUDE 'common6.h'
 *
+      INTEGER NUNBOUND(NMAX)
+      
 #ifdef TT
 *** FlorentR - The evaluation of the number of stars and the mass is
 ***    done iteratively, according to an energy criterion. 
 ***    Idea from Mark Gieles.
 
-      INTEGER NUNBOUND(NMAX)
       NUNBOUND = 0
       ZMBOUND = ZMASS
       NOLDESC2 = 0
@@ -26,6 +27,21 @@
       ZMESC2 = 0
 
 *** FRenaud
+#else
+      if (MIMD_MODE) then
+         NUNBOUND = 0
+         ZMBOUND = ZMASS
+         NOLDESC2 = 0
+         NITER = 0
+         
+ 80      CONTINUE
+         NITER = NITER + 1
+         NESC = 0 
+         NESC2 = 0
+         
+         ZMESC = 0
+         ZMESC2 = 0
+      end if
 #endif
 *
 *       Specify escape energy (tidal field or isolated system).
@@ -44,6 +60,9 @@
 *** FlorentR - use ZMBOUND instead of ZMASS
       V2M = 0.5*ZMBOUND/RSCALE
 #else
+      IF (MIMD_MODE) THEN
+         V2M = 0.5*ZMBOUND/RSCALE
+      END IF
       V2M = 0.5*ZMASS/RSCALE
 #endif
 *
@@ -51,6 +70,8 @@
 #ifndef TT
       NESC = 0
 #endif
+      IF (MIMD_MODE) NESC = 0
+
       DO 60 I = IFIRST,NTOT
           RI2 = (X(1,I) - RDENS(1))**2 + (X(2,I) - RDENS(2))**2 +
      &                                   (X(3,I) - RDENS(3))**2
@@ -74,7 +95,13 @@
             IF (NUNBOUND(J).EQ.0) POTI = POTI + BODY(J)/SQRT(RIJ2)
 *** FRenaud
 #else
-              POTI = POTI + BODY(J)/SQRT(RIJ2)
+            IF (MIMD_MODE) THEN
+               IF (NUNBOUND(J).EQ.0) THEN
+                  POTI=POTI+BODY(J)/SQRT(RIJ2)
+               END IF
+            ELSE
+               POTI = POTI + BODY(J)/SQRT(RIJ2)
+            END IF
 #endif
    55     CONTINUE
           EI = 0.5*VI2 - POTI
@@ -99,7 +126,26 @@
          ENDIF
 *** FRenaud
 #else
-          IF (EI.GT.ECRIT) NESC = NESC + 1
+         IF (MIMD_MODE) THEN
+            IF (EI.GT.ECRIT) THEN
+               NESC = NESC + 1
+               ZMESC = ZMESC + BODY(I)
+               IF (I.GT.N) THEN
+                  NESC = NESC + 1
+               ENDIF
+            ENDIF
+            
+            IF (EI.GT.0) THEN
+               NESC2 = NESC2 + 1
+               ZMESC2 = ZMESC2 + BODY(I)
+               NUNBOUND(I) = 1
+               IF (I.GT.N) THEN
+                  NESC2 = NESC2 + 1
+               ENDIF
+            ENDIF
+         ENDIF
+
+         IF (EI.GT.ECRIT) NESC = NESC + 1
 #endif
    60 CONTINUE
 *
@@ -125,7 +171,29 @@
 
 C 70   CONTINUE
 *** FRenaud
+#else
+
+      IF (MIMD_MODE) THEN
+         ZMBOUND = ZMASS - ZMESC
+         
+         IF(NITER.LT.5) THEN
+            IF(ABS(NESC2-NOLDESC2).GT.NESC2/10.0) THEN
+*     re-compute but with updated ZMBOUND
+               NOLDESC2 = NESC2
+               GO TO 80
+            END IF
+         ELSE
+         WRITE(6,*) "Warning: Max nb of iterations reached in Jacobi.f"
+         END IF
+         
+      WRITE(6,90) TTOT,ZMASS,ZMASS-ZMESC,ZMASS-ZMESC2,N,N-NESC,N-NESC2
+ 90   FORMAT(" EBOUND   TTOT ZMASS MBOUND MBOUND2   N NBOUND NBOUND2 ",
+     &        f10.3,3(f10.4),3(i7))
+
+      END IF
 #endif
+
+
       RETURN
 *
       END

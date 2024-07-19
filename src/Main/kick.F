@@ -93,10 +93,10 @@
 *****       I will be the processer id to share data
 *     IF (ICASE.EQ.-147) THEN
 *ifdef PARALLEL         
-*        CALL MPI_BCAST(IPAIR,1,MPI_INTEGER,I,MPI_COMM_WORLD,ierr)
-*        CALL MPI_BCAST(KC,1,MPI_INTEGER,I,MPI_COMM_WORLD,ierr)
-*        CALL MPI_BCAST(VDIS,1,MPI_REAL8,I,MPI_COMM_WORLD,ierr)
-*        CALL MPI_BCAST(RI,1,MPI_REAL8,I,MPI_COMM_WORLD,ierr)
+*        CALL MPI_BCAST(IPAIR,1,MPI_INTEGER,I,MPI_COMM_NB6,ierr)
+*        CALL MPI_BCAST(KC,1,MPI_INTEGER,I,MPI_COMM_NB6,ierr)
+*        CALL MPI_BCAST(VDIS,1,MPI_REAL8,I,MPI_COMM_NB6,ierr)
+*        CALL MPI_BCAST(RI,1,MPI_REAL8,I,MPI_COMM_NB6,ierr)
 *endif         
 *        RETURN
 *     END IF

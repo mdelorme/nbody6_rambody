@@ -52,7 +52,7 @@
           RCM2 = RCM(1)**2+RCM(2)**2+RCM(3)**2
           VCM2 = VCM(1)**2+VCM(2)**2+VCM(3)**2
           if(rank.eq.0)
-     &    WRITE (6,36)  TIME, NAME(I), NAME(JMIN), BODY(I), BODY(JMIN),
+    &    WRITE (6,36)  TIME, NAME(I), NAME(JMIN), BODY(I), BODY(JMIN),
      &  EREL, SEMI, ZN, RIJMIN, ECC, LIST(1,I), SQRT(RCM2), SQRT(VCM2)
    36     FORMAT (' significant binaries ',1P,E18.5,2I9,
      &                  7E12.4,I5, 2E12.4)
@@ -80,7 +80,7 @@
      &           BODY(JMIN), EB, SEMI, ZN, RP, ECC, LIST(1,N+JPAIR),
      &           GAMMA(JPAIR), RI, VI, KSLOW(JPAIR)
    35     FORMAT (' regularized binaries ',1P,E18.5,
-     &                  3I9,7E12.4,I5,3E12.4,I9)
+     &                  3I9,7E12.4,I5,3E12.4,I9)   
    60 CONTINUE
 *
    70 RETURN
