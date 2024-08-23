@@ -340,13 +340,14 @@ C     New (Aug.1998) by P.Kroupa: (time also in Myr)
                ECC2 = (1.0 - R(IP)/SEMI)**2 +
      &              TDOT2(IP)**2/(SEMI*BODY(N+IP))
                EB = BODY(I1)*BODY(I2)*H(IP)/BODY(N+IP)
-               if(rank.eq.0)
+               if(rank.eq.0) then
                WRITE (39,62)  TTOT, NAME(I1), NAME(I2), KSTAR(N+IP),
      &              LIST(1,I1), SQRT(ECC2), SEMI, PB, EB, E(3)
  62            FORMAT (' BINARY:   Time[Myr] NAME(I1) NAME(I2) ',
      &              'K*(ICM) NP ECC SEMI[NB] P[days] EB[NB] EM[NB] ',
      &              1P,E26.17,0P,2I12,I4,I6,1P,5E15.6,0P)
                CALL FLUSH(39)
+               end if
             END IF
          END IF
 *     

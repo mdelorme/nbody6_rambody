@@ -55,8 +55,8 @@
       if (iargc() >= 1) then
          call getarg(1, env_var)
          env_var = ADJUSTL(TRIM(env_var))
-         INPUT_UNIT=99
-         open(unit=99, file=env_var, action='READ')
+         !INPUT_UNIT=99
+         open(unit=5, file=env_var, action='READ')
          write(6,*) 'Reading input from ', env_var
       else
          INPUT_UNIT=5

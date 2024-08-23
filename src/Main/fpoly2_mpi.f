@@ -200,11 +200,11 @@
 *     print*,' FPOLY2: aft rank,irank=',rank,irank
 *
       
-      call cputim(tt998)`
+      call cputim(tt998)
        call mpi_barrier(MPI_COMM_NB6,ierr)
        call cputim(tt999)
        if(rank.eq.0)ibarcount=ibarcount+1
-       if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.`
+       if(rank.eq.0)ttbar = ttbar + (tt999-tt998)*60.
 
  1001 continue
 *     

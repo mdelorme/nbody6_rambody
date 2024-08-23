@@ -6,9 +6,9 @@
 *
       INCLUDE 'common6.h'
       LOGICAL LSCALE
+      NAMELIST /INSCALE/ Q, VXROT, VZROT, RTIDE
 *      Scaling if initial model is constructed or King model is read
       LSCALE = KZ(22).LT.2.OR.KZ(22).GE.6
-*
 #ifdef PARALLEL
 #define MPIINIT 1
 #else
@@ -17,7 +17,7 @@
 *
 *       Read virial ratio, rotation scaling factors, boundary radius & tidal radius.
       if(rank.eq.0)then
-      READ (NML=INSCALE, IOSTAT=IIC, UNIT=5)
+      READ (UNIT=5, NML=INSCALE, IOSTAT=IIC)
       IF (IIC.NE.0) WRITE (6, '("SCALE: invalid Namelist format")')
 *     READ (5,*)  Q, VXROT, VZROT, RTIDE
 

@@ -63,7 +63,6 @@
       END IF
 *** FRenaud
 #endif
-#endif
 
 *     RAMBODY
       if (MIMD_MODE) then

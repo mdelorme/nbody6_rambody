@@ -13,6 +13,7 @@ C     &                LISTC(LMAX)
       REAL*8  XI(3),XIDOT(3),DFIRR(3),FREG(3),DV(3),DFD(3),FDR(3)
       REAL*8  FRX(3),FDX(3)
       INTEGER NLIST(LMAX),JJLIST(2*LMAX)
+      LOGICAL lnan
 *     REAL*8  DFI(3),DFRG(3)
 *      LOGICAL LCHECK
 *
