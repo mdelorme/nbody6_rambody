@@ -2,9 +2,9 @@
 *       ------------------
 *
 *       Choose between small or large run.
-      PARAMETER  (NMAX=15107200,KMAX=5120000,LMAX=600,MMAX=2048,
+      PARAMETER  (NMAX=24576,KMAX=8192,LMAX=400,MMAX=512,
      &            MLD=22,MLR=600,MLV=200,MCL=10,NCMAX=10,NTMAX=10000,
-     &            NRBDMAX=500000  )
+     &            NRBDMAX=100000)
       parameter (maxpe=1024,ithread=8)
 *
 *
@@ -19,6 +19,5 @@
 *       MCL     Maximum number of interstellar clouds.
 *       NCMAX   Maximum number of chain members (do not change).
 *       NTMAX   Maximum number of circularizing binaries.
-*       NRBDMAX Maximum number of points for the Rambody mesh
 *       ------------------------------------------------------
 *

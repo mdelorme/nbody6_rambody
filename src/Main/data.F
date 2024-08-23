@@ -10,6 +10,15 @@
 *      REAL*8  A(8)
       CHARACTER*1 CHAR(80)
       LOGICAL LREADN,LREADP,LREADF
+      NAMELIST /INDATA/ ALPHAS, BODY1, BODYN, NBIN0, NHI0, ZMET,
+     &     EPOCH0,DTPLOT
+* sse parameters for hrdiag, mlwind
+      integer ecflag,wdflag,nsflag,psflag,mdflag,bhflag,kmech,idum
+      real*8 mch,mxns0,mxns1,nwind,bwind,flbv,disp,ecsig,
+     *       wdsig1,wdsig2,wdkmax,vvfac,zmetal
+      common/sse/ecflag,wdflag,nsflag,psflag,mdflag,bhflag,
+     *       kmech,idum,mch,mxns0,mxns1,nwind,bwind,flbv,disp,ecsig,
+     *       wdsig1,wdsig2,wdkmax,vvfac,zmetal
 *
 #ifdef PARALLEL
 #define MPIINIT 1
@@ -51,9 +60,11 @@
    51     CONTINUE
           PRINT*,' masses read ',BODY(1),BODY(N)
           DO 52 I = 1,N
-   52     READ(10,*)(X(K,I),K=1,3)
+            READ(10,*)(X(K,I),K=1,3)
+   52     CONTINUE
           DO 53 I = 1,N
-   53     READ(10,*)(XDOT(K,I),K=1,3)
+          READ(10,*)(XDOT(K,I),K=1,3)
+   53     CONTINUE
           NTOT = N
           PRINT*,' rank ',rank,N,' body data read from unit 10 '
           CALL FLUSH(6)
