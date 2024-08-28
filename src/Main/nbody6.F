@@ -41,8 +41,8 @@
       character (len=128) env_var
       integer tmp_col, istatus
       !double precision send_dt
-      integer cbuf(1), repetitions, smax_0
-      double precision next_time
+      integer cbuf(1), repetitions
+      double precision next_time, smax_0
 
       repetitions = 0
 
