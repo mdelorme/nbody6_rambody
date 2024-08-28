@@ -370,6 +370,10 @@ C     New (Aug. 1998): P.Kroupa
 *     
       IF (TTOT*TSCALE.GT.TCRITp.OR.TTOT.GT.TCRIT - 20.0*DTMIN
      &     .OR.N.LE.NCRIT) THEN
+
+      if (ttot*tscale .gt.tcritp) write(6,*)'TTOT*TSCALE>TCRITp'
+      if (ttot.gt.tcrit - 20.0*dtmin) write(6,*)'TTOT>TCRIT-20dtmin'
+      if (n.le. ncrit) write(6,*) 'N < NCRIT -> End run'
 *     Terminate after optional COMMON save.
          if(rank.eq.0) THEN
             WRITE (6,65) TTOT*TSCALE, TOFF, TIME, TIME+TOFF,
