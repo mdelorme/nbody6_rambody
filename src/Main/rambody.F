@@ -43,6 +43,7 @@
       if (rank .eq. 0) then
 
          dt_n(1) = SMAX * TSTAR
+         write(6,*) 'SMAX = ', SMAX, ' TSTAR = ', TSTAR
 
          write(6,*) 'NB6 : Sending timestep to Ramses : ', dt_n
          call flush(6)
@@ -68,6 +69,7 @@
       REAL*8 :: mtot
       INTEGER :: istatus, i, k, i1, i2
       REAL*8, dimension(3) :: xrel, vrel
+      REAL*8, dimension(3) :: frel,fdrel,d2rel,d3rel
 
 *     First, sending escapers
       
@@ -89,7 +91,7 @@
 
 *     First, ks pairs (What happens with a pair having a pair ?)
       do i=1, npairs
-         call KSRES_OP(i, i1, i2, xrel, vrel, 0)
+         call KSRES_OP(i,i1,i2,xrel,vrel,frel,fdrel,d2rel,d3rel,0)
          
          do k=1, 3
 *     Positions
@@ -167,6 +169,7 @@
       double precision rsend
       
       write(6,*) 'NB6 : Sending the scale to ramses'
+      write(6,*) 'RBDCOMM 8'
       rsend = RTIDE/RBAR
       call MPI_Send(rsend, 1, MPI_DOUBLE_PRECISION, 1, 8,
      &     MPI_COMM_RBD, ierr)
